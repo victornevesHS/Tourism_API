@@ -16,7 +16,7 @@ class PontoTuristicoViewSet(ModelViewSet):
     filter_backends = (SearchFilter,)
     permission_classes = [DjangoModelPermissions]
     authentication_classes = [TokenAuthentication]
-    #lookup_field = 'id'
+    lookup_field = 'id'
 
     def get_queryset(self):
         id = self.request.query_params.get('id', None)
@@ -60,3 +60,17 @@ class PontoTuristicoViewSet(ModelViewSet):
     @action(methods=['get'], detail=False)
     def teste(self, request):
         pass
+
+    @action(methods=['post'], detail=True)
+    def associa_atracoes(self, request, id):
+        atracoes = request.data['ids']
+
+        ponto = PontoTuristico.objects.get(id=id)
+
+        ponto.atracoes.set(atracoes)
+
+        ponto.save()
+        return HttpResponse('ok')
+
+
+
